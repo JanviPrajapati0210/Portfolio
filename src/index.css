@@ -1,0 +1,57 @@
+:root {
+  --bg: #0a1220;
+  --bg-elevated: #101c30;
+  --text: #f5f7fa;
+  --muted: #8b96ac;
+  --accent: #2dd4bf;
+  --accent-amber: #e8a33d;
+  --line: rgba(245, 247, 250, 0.08);
+
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(45, 212, 191, 0.14), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 30%, rgba(45, 212, 191, 0.06), transparent 60%);
+  background-repeat: no-repeat;
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
