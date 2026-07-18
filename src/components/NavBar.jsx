@@ -1,42 +1,71 @@
 import { useEffect, useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 
-const SECTIONS = ['Home', 'About', 'Skills', 'Projects', 'Contact'];
+const NAV_ITEMS = [
+  { type: 'route', path: '/', label: 'Home' },
+  { type: 'hash', path: '/#about', label: 'About' },
+  { type: 'hash', path: '/#skills', label: 'Skills' },
+  { type: 'route', path: '/projects', label: 'Projects' },
+  { type: 'route', path: '/contact', label: 'Contact' },
+];
 
 function NavBar() {
-  const [active, setActive] = useState('home');
+  const [isLight, setIsLight] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      let current = 'home';
-      for (const id of SECTIONS) {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 120) {
-          current = id;
-        }
-      }
-      setActive(current);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    document.documentElement.classList.toggle('light', isLight);
+  }, [isLight]);
 
   return (
     <nav className="navbar">
-      <span className="navbar__brand">JV_</span>
+      <Link to="/" className="navbar__brand">
+        JV_
+      </Link>
+
       <ul className="navbar__links">
-        {SECTIONS.map((id) => (
-          <li key={id}>
-            <a
-              href={`#${id}`}
-              className={active === id ? 'navbar__link navbar__link--active' : 'navbar__link'}
-            >
-              {String(SECTIONS.indexOf(id) + 1).padStart(2, '0')}. {id}
-            </a>
-          </li>
-        ))}
+        {NAV_ITEMS.map((item, index) => {
+          const number = String(index + 1).padStart(2, '0');
+
+          if (item.type === 'route') {
+            return (
+              <li key={item.path}>
+                <NavLink
+                  to={item.path}
+                  end={item.path === '/'}
+                  className={({ isActive }) =>
+                    isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+                  }
+                >
+                  {number}. {item.label}
+                </NavLink>
+              </li>
+            );
+          }
+
+          const isActiveHash = location.pathname === '/' && location.hash === item.path.slice(1);
+
+          return (
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                className={isActiveHash ? 'navbar__link navbar__link--active' : 'navbar__link'}
+              >
+                {number}. {item.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
+
+      <button
+        type="button"
+        className="navbar__toggle"
+        onClick={() => setIsLight((prev) => !prev)}
+        aria-label="Toggle light and dark mode"
+      >
+        {isLight ? 'Dark mode' : 'Light mode'}
+      </button>
     </nav>
   );
 }

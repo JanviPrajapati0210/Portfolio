@@ -1,33 +1,23 @@
+import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
-import Header from './components/Header';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import ProjectsPage from './pages/ProjectsPage';
+import ContactPage from './pages/ContactPage';
+import NotFound from './pages/NotFound';
 import './App.css';
-
-const SKILLS = [
-  'React',
-  'JavaScript',
-  'Python',
-  'FastAPI',
-  'Flask',
-  'MongoDB',
-  'Firebase',
-  'Gemini API',
-  'Claude API',
-  'Git & GitHub',
-];
 
 function App() {
   return (
     <>
       <NavBar />
       <main>
-        <Header name="Janvi Prajapati" themeColor="#2DD4BF" />
-        <About />
-        <Skills skillList={SKILLS} />
-        <Projects />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
       <Footer />
     </>

@@ -12,6 +12,34 @@
   --font-body: 'Inter', sans-serif;
 }
 
+:root.light {
+  --bg: #faf6f2;
+  --bg-elevated: #ffffff;
+  --text: #33313f;
+  --muted: #8b8698;
+  --accent: #4fb8a8;
+  --accent-amber: #e0a458;
+  --line: rgba(51, 49, 63, 0.12);
+}
+
+:root.light body {
+  background-image:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(79, 184, 168, 0.12), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 30%, rgba(79, 184, 168, 0.06), transparent 60%);
+}
+
+:root.light .stat-panel,
+:root.light .projects__card,
+:root.light .skills__tag,
+:root.light .contact-form__help,
+:root.light .contact-form__textarea {
+  box-shadow: 0 2px 12px rgba(51, 49, 63, 0.06);
+}
+
+:root.light .btn--solid {
+  color: #ffffff;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

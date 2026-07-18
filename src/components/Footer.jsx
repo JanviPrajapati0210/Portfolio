@@ -2,9 +2,7 @@ function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="Contact" className="footer">
-      <h2 className="section__title">Contact</h2>
-      <p>Open to internships, hackathon teams, and interesting side projects.</p>
+    <footer className="footer">
       <div className="footer__links">
         <a href="mailto:janvi0210@gmail.com" className="footer__link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">

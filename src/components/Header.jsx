@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const ROLES = ['AIML Student', 'Full-Stack Builder', 'Hackathon Participant'];
 
@@ -38,10 +39,12 @@ function Header({ name, themeColor }) {
             )}
           </h1>
 
-          <p className="header__role">
-            <span className="header__cursor" style={{ borderColor: themeColor, color: themeColor }}>
-              {ROLES[roleIndex]}
-            </span>
+          <p className="header__role-static">
+            <strong style={{ color: themeColor }}>AIML Engineer</strong>
+            <span className="divider">·</span>
+            Builder
+            <span className="divider">·</span>
+            Designer
           </p>
 
           <p className="header__tagline">
@@ -51,13 +54,15 @@ function Header({ name, themeColor }) {
           </p>
 
           <div className="header__actions">
-            <a href="#projects" className="btn btn--solid" style={{ background: themeColor }}>
+            <Link to="/projects" className="btn btn--solid" style={{ background: themeColor }}>
               See My Work ↓
-            </a>
-            <a href="#contact" className="btn btn--outline">
+            </Link>
+            <Link to="/contact" className="btn btn--outline">
               Get In Touch
-            </a>
+            </Link>
           </div>
+
+          <p className="header__scroll-cue">Scroll to explore</p>
         </div>
 
         <div className="stat-panel">
