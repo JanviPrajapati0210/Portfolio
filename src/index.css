@@ -1,43 +1,51 @@
-:root {
-  --bg: #0a1220;
-  --bg-elevated: #101c30;
-  --text: #f5f7fa;
-  --muted: #8b96ac;
-  --accent: #2dd4bf;
-  --accent-amber: #e8a33d;
-  --line: rgba(245, 247, 250, 0.08);
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
 
-  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+:root {
+  --bg: #211f2e;
+  --bg-elevated: #2b2839;
+  --text: #f3efee;
+  --muted: #aba6bc;
+  --line: rgba(243, 239, 238, 0.09);
+
+  --accent: #b7a9f5;
+  --on-accent: #211f2e; 
+  --accent-soft: rgba(183, 169, 245, 0.16);
+  
+  --accent-coral: #cfc3ff;
+  --accent-coral-soft: rgba(207, 195, 255, 0.12);
+  
+  --accent-mint: #a394f0;
+  --accent-mint-soft: rgba(163, 148, 240, 0.16);
+  
+  --accent-amber: #decbfe;
+  --accent-amber-soft: rgba(222, 203, 254, 0.14);
+
+  --font-display: 'Sora', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
   --font-body: 'Inter', sans-serif;
 }
 
 :root.light {
-  --bg: #faf6f2;
+  --bg: #f5f3fa;                    
   --bg-elevated: #ffffff;
-  --text: #33313f;
-  --muted: #8b8698;
-  --accent: #4fb8a8;
-  --accent-amber: #e0a458;
-  --line: rgba(51, 49, 63, 0.12);
-}
+  --text: #2e2a3b;
+  --muted: #6e6885;                 
+  --line: rgba(124, 111, 224, 0.15); 
 
-:root.light body {
-  background-image:
-    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(79, 184, 168, 0.12), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 30%, rgba(79, 184, 168, 0.06), transparent 60%);
-}
 
-:root.light .stat-panel,
-:root.light .projects__card,
-:root.light .skills__tag,
-:root.light .contact-form__help,
-:root.light .contact-form__textarea {
-  box-shadow: 0 2px 12px rgba(51, 49, 63, 0.06);
-}
+  --accent: #7c6fe0;
+  --accent-soft: #e7e2fc;
+  
+  --accent-coral: #5d51cb;
+  --accent-coral-soft: #eeebff;
+  
+  --accent-mint: #695cc7;
+  --accent-mint-soft: #f1eeff;
+  
+  --accent-amber: #7466dc;
+  --accent-amber-soft: #e8e4fd;
 
-:root.light .btn--solid {
-  color: #ffffff;
+  --on-accent: #ffffff;
 }
 
 * {
@@ -50,16 +58,19 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(45, 212, 191, 0.14), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 30%, rgba(45, 212, 191, 0.06), transparent 60%);
-  background-repeat: no-repeat;
   color: var(--text);
   font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 a {
@@ -69,6 +80,10 @@ a {
 
 ul {
   list-style: none;
+}
+
+button {
+  font: inherit;
 }
 
 :focus-visible {

@@ -18,8 +18,8 @@ const PROJECTS = [
 
 function Projects() {
   return (
-    <section id="Projects" className="section">
-      <h2 className="section__title"> Projects</h2>
+    <section id="projects" className="section">
+      <h2 className="section__title section__title--projects"> Projects</h2>
       <div className="projects">
         {PROJECTS.map((p) => (
           <article key={p.id} className="projects__card">

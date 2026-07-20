@@ -1,8 +1,8 @@
 function About() {
   return (
-    <section id="About" className="section">
-      <h2 className="section__title"> About</h2>
-      <div className="About">
+    <section id="about" className="section">
+      <h2 className="section__title section__title--about"> About</h2>
+      <div className="about">
         <p>
           I'm an AIML student at CSPIT, CHARUSAT. I recently completed a summer
           internship at Esparse Matrix Solutions, and alongside coursework I build full-stack,

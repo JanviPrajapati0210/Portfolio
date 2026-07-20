@@ -1,7 +1,7 @@
 function Skills({ skillList }) {
   return (
-    <section id="Skills" className="section">
-      <h2 className="section__title"> Skills</h2>
+    <section id="skills" className="section">
+      <h2 className="section__title section__title--skills"> Skills</h2>
       <ul className="skills">
         {skillList.map((s) => (
           <li key={s} className="skills__tag">

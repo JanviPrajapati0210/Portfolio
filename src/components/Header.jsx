@@ -9,7 +9,7 @@ const STATS = [
   { value: '1', label: 'Internship' },
 ];
 
-function Header({ name, themeColor }) {
+function Header({ name }) {
   const [roleIndex, setRoleIndex] = useState(0);
   const [firstName, ...rest] = name.trim().split(' ');
   const lastName = rest.join(' ');
@@ -25,22 +25,22 @@ function Header({ name, themeColor }) {
     <header id="Home" className="header">
       <div className="header__grid">
         <div>
-          <span className="badge" style={{ borderColor: themeColor, color: themeColor }}>
-            <span className="badge__dot" style={{ background: themeColor }} />
+          <span className="badge" style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}>
+            <span className="badge__dot" style={{ background: 'var(--accent)' }} />
             Available for internships · Vadodara, India
           </span>
 
           <h1 className="header__name">
             <span className="header__name-solid">{firstName}</span>
             {lastName && (
-              <span className="header__name-outline" style={{ WebkitTextStrokeColor: themeColor }}>
+              <span className="header__name-outline" style={{ WebkitTextStrokeColor: 'var(--accent)' }}>
                 {lastName}
               </span>
             )}
           </h1>
 
           <p className="header__role-static">
-            <strong style={{ color: themeColor }}>AIML Engineer</strong>
+            <strong style={{ color: 'var(--accent)' }}>AIML Engineer</strong>
             <span className="divider">·</span>
             Builder
             <span className="divider">·</span>
@@ -48,13 +48,11 @@ function Header({ name, themeColor }) {
           </p>
 
           <p className="header__tagline">
-            <p className="header__tagline">
              Turning ideas into working AI products, one build at a time.
-            </p>
           </p>
 
           <div className="header__actions">
-            <Link to="/projects" className="btn btn--solid" style={{ background: themeColor }}>
+            <Link to="/projects" className="btn btn--solid" style={{ background: 'var(--accent)' }}>
               See My Work ↓
             </Link>
             <Link to="/contact" className="btn btn--outline">
@@ -68,7 +66,7 @@ function Header({ name, themeColor }) {
         <div className="stat-panel">
           {STATS.map((s) => (
             <div key={s.label} className="stat-panel__item">
-              <p className="stat-panel__value" style={{ color: themeColor }}>
+              <p className="stat-panel__value" style={{ color: 'var(--accent)' }}>
                 {s.value}
               </p>
               <p className="stat-panel__label">{s.label}</p>

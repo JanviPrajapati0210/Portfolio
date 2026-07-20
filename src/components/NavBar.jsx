@@ -1,21 +1,31 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 
 const NAV_ITEMS = [
   { type: 'route', path: '/', label: 'Home' },
-  { type: 'hash', path: '/#about', label: 'About' },
-  { type: 'hash', path: '/#skills', label: 'Skills' },
+  { type: 'hash', id: 'about', label: 'About' },
+  { type: 'hash', id: 'skills', label: 'Skills' },
   { type: 'route', path: '/projects', label: 'Projects' },
   { type: 'route', path: '/contact', label: 'Contact' },
 ];
 
 function NavBar() {
   const [isLight, setIsLight] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', isLight);
   }, [isLight]);
+
+  const goToSection = (id) => {
+    if (location.pathname === '/') {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate(`/#${id}`);
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -43,16 +53,17 @@ function NavBar() {
             );
           }
 
-          const isActiveHash = location.pathname === '/' && location.hash === item.path.slice(1);
+          const isActiveHash = location.pathname === '/' && location.hash === `#${item.id}`;
 
           return (
-            <li key={item.path}>
-              <Link
-                to={item.path}
+            <li key={item.id}>
+              <button
+                type="button"
+                onClick={() => goToSection(item.id)}
                 className={isActiveHash ? 'navbar__link navbar__link--active' : 'navbar__link'}
               >
                 {number}. {item.label}
-              </Link>
+              </button>
             </li>
           );
         })}

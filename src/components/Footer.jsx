@@ -4,7 +4,7 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer__links">
-        <a href="mailto:janvi0210@gmail.com" className="footer__link">
+        <a href="janvip0210@gmail.com" className="footer__link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             <rect x="2" y="4" width="20" height="16" rx="2" />
             <path d="m22 6-10 7L2 6" />
