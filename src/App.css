@@ -185,17 +185,20 @@ main {
 
 .header__name-solid,
 .header__name-outline {
+  font-family: var(--font-display);
   font-size: clamp(3.2rem, 8vw, 5.8rem);
+  font-weight: 800;
 }
 
 .header__name-solid {
   color: var(--text);
 }
 
+
 .header__name-outline {
-  color: transparent;
-  -webkit-text-stroke-width: 1.5px;
-  text-stroke-width: 1.5px;
+  color: var(--accent);
+  -webkit-text-stroke-width: 0;
+  text-stroke-width: 0;
 }
 
 .header__role-static {
@@ -608,4 +611,51 @@ main {
 :root.light .navbar {
   background: color-mix(in srgb, var(--bg) 85%, transparent);
   border-bottom: 1px solid var(--line);
+}
+
+/* Navbar Brand Logo Badge */
+.navbar__brand {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.navbar__logo-text {
+  color: var(--text);
+}
+
+.navbar__logo-cursor {
+  color: var(--accent);
+  animation: blink 1.2s infinite;
+}
+
+.navbar__brand:hover .navbar__logo {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Terminal Cursor Blink Animation */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }

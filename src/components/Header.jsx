@@ -42,7 +42,7 @@ function Header({ name }) {
           <p className="header__role-static">
             <strong style={{ color: 'var(--accent)' }}>AIML Engineer</strong>
             <span className="divider">·</span>
-            Builder
+            Web Developer
             <span className="divider">·</span>
             Designer
           </p>

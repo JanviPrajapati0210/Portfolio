@@ -29,8 +29,12 @@ function NavBar() {
 
   return (
     <nav className="navbar">
+      {/* Brand Logo Badge */}
       <Link to="/" className="navbar__brand">
-        JV_
+        <div className="navbar__logo">
+          <span className="navbar__logo-text">JP</span>
+          <span className="navbar__logo-cursor">_</span>
+        </div>
       </Link>
 
       <ul className="navbar__links">
