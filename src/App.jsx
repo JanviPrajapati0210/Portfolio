@@ -1,37 +1,26 @@
-import "./App.css";
-
-import Header from "./components/Header";
-import About from "./components/About";
-import Skills from "./components/Skills";
-import Footer from "./components/Footer";
+import { Routes, Route } from 'react-router-dom';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import ProjectsPage from './pages/ProjectsPage';
+import ContactPage from './pages/ContactPage';
+import NotFound from './pages/NotFound';
+import './App.css';
 
 function App() {
-
-  const skills = [
-    "Python",
-    "C++",
-    "React",
-    "Machine Learning",
-    "HTML",
-    "CSS",
-    "JavaScript"
-  ];
-
   return (
-    <div className="container">
-
-      <Header
-        name="Janvi Prajapati"
-        themeColor="#F9D5E5"
-      />
-
-      <About />
-
-      <Skills skillList={skills} />
-
+    <>
+      <NavBar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
       <Footer />
-
-    </div>
+    </>
   );
 }
 
