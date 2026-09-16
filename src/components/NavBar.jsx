@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { type: 'hash', id: 'about', label: 'About' },
   { type: 'hash', id: 'skills', label: 'Skills' },
   { type: 'route', path: '/projects', label: 'Projects' },
+  { type: 'route', path: '/tasks', label: 'Tasks' },
   { type: 'route', path: '/contact', label: 'Contact' },
 ];
 

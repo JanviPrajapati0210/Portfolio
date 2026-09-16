@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 const Projects = () => {
-  // 1. Setup State Variables
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // GitHub username to fetch public repos for
   const githubUsername = 'JanviPrajapati0210';
 
-  // 2. Fetch Data & Top 3 Languages Function
   const fetchRepositories = async () => {
     setLoading(true);
     setError(null);
@@ -24,14 +21,12 @@ const Projects = () => {
 
       const reposData = await response.json();
 
-      // Fetch top 3 languages for each repository in parallel
       const reposWithLanguages = await Promise.all(
         reposData.map(async (repo) => {
           try {
             const langRes = await fetch(repo.languages_url);
             if (langRes.ok) {
               const langData = await langRes.json();
-              // Sort languages by byte count descending and pick top 3
               const topLanguages = Object.keys(langData)
                 .sort((a, b) => langData[b] - langData[a])
                 .slice(0, 3);
@@ -40,7 +35,6 @@ const Projects = () => {
           } catch (err) {
             console.error(`Error fetching languages for ${repo.name}:`, err);
           }
-          // Fallback to primary language if languages_url fetch fails
           return { ...repo, topLanguages: repo.language ? [repo.language] : [] };
         })
       );
@@ -53,21 +47,16 @@ const Projects = () => {
     }
   };
 
-  // 3. Trigger Fetch on Mount
   useEffect(() => {
     fetchRepositories();
   }, []);
 
-  // Filter Repositories based on search input & Sort by most recently updated
   const filteredAndSortedRepos = repos
     .filter((repo) =>
       repo.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
-  // 4. Conditional Rendering based on state
-
-  // Loading State
   if (loading) {
     return (
       <section className="section" style={{ textAlign: 'center', padding: '60px 0' }}>
@@ -80,7 +69,6 @@ const Projects = () => {
     );
   }
 
-  // Error State with Retry Button
   if (error) {
     return (
       <section className="section" style={{ textAlign: 'center', padding: '60px 0' }}>
@@ -89,8 +77,8 @@ const Projects = () => {
           Error Loading Projects
         </h3>
         <p style={{ color: 'var(--muted)', marginBottom: '20px' }}>{error}</p>
-        <button 
-          onClick={fetchRepositories} 
+        <button
+          onClick={fetchRepositories}
           className="btn btn--outline"
           style={{ cursor: 'pointer' }}
         >
@@ -100,22 +88,18 @@ const Projects = () => {
     );
   }
 
-  // Success State: Render List
   return (
     <section className="section">
-      {/* Header Bar: Title, Count, & Search */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span className="section__title section__title--projects" style={{ marginBottom: 0 }}>
             GitHub Repositories
           </span>
-          {/* Total Repos Count Badge */}
           <span style={countBadgeStyle}>
             {filteredAndSortedRepos.length} {filteredAndSortedRepos.length === 1 ? 'Repo' : 'Repos'}
           </span>
         </div>
 
-        {/* Search Input Filter */}
         <input
           type="text"
           placeholder="Search repositories by name..."
@@ -125,7 +109,6 @@ const Projects = () => {
         />
       </div>
 
-      {/* Repository Grid Layout */}
       {filteredAndSortedRepos.length === 0 ? (
         <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '40px 0' }}>
           No repositories found matching "{searchTerm}".
@@ -143,12 +126,10 @@ const Projects = () => {
                 </p>
               </div>
 
-              {/* Card Footer: Metadata (Stars, Forks, Top 3 Languages) & External Link */}
               <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid var(--line)' }}>
                 <ul className="projects__stack" style={{ marginBottom: '16px' }}>
                   <li>⭐ {repo.stargazers_count} stars</li>
                   <li>🍴 {repo.forks_count} forks</li>
-                  {/* Map Top 3 Languages */}
                   {repo.topLanguages && repo.topLanguages.length > 0 && (
                     repo.topLanguages.map((lang, idx) => (
                       <li key={idx}>💻 {lang}</li>
@@ -174,7 +155,6 @@ const Projects = () => {
   );
 };
 
-// Styles leveraging your app's CSS variables
 const spinnerStyle = {
   width: '40px',
   height: '40px',
