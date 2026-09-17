@@ -4,14 +4,29 @@ import Toast from './Toast';
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
+const STATUSES = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'completed', label: 'Completed' },
+];
+
+const STATUS_FILTERS = [{ value: 'all', label: 'Status' }, ...STATUSES];
+const PRIORITY_FILTERS = [
+  { value: 'all', label: 'Priority' },
+  ...PRIORITIES.map((p) => ({ value: p, label: p[0].toUpperCase() + p.slice(1) })),
+];
+
 const TaskManager = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newPriority, setNewPriority] = useState('medium');
+  const [newStatus, setNewStatus] = useState('pending');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPriority, setFilterPriority] = useState('all');
   const [submitting, setSubmitting] = useState(false);
-  const [confirmingId, setConfirmingId] = useState(null);
+  const [confirmingTask, setConfirmingTask] = useState(null);
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => setToast({ message, type });
@@ -43,7 +58,7 @@ const TaskManager = () => {
       _id: tempId,
       title,
       priority: newPriority,
-      completed: false,
+      status: newStatus,
       __optimistic: true,
     };
     setTasks((prev) => [optimisticTask, ...prev]);
@@ -51,7 +66,7 @@ const TaskManager = () => {
     setSubmitting(true);
 
     try {
-      const created = await createTask({ title, priority: newPriority });
+      const created = await createTask({ title, priority: newPriority, status: newStatus });
       setTasks((prev) => prev.map((t) => (t._id === tempId ? created : t)));
       showToast('Task added.', 'success');
     } catch (err) {
@@ -62,13 +77,13 @@ const TaskManager = () => {
     }
   };
 
-  const handleToggleComplete = async (task) => {
+  const handleStatusChange = async (task, newStatusValue) => {
     const previous = tasks;
     setTasks((prev) =>
-      prev.map((t) => (t._id === task._id ? { ...t, completed: !t.completed } : t))
+      prev.map((t) => (t._id === task._id ? { ...t, status: newStatusValue } : t))
     );
     try {
-      const updated = await updateTask(task._id, { completed: !task.completed });
+      const updated = await updateTask(task._id, { status: newStatusValue });
       setTasks((prev) => prev.map((t) => (t._id === task._id ? updated : t)));
     } catch (err) {
       setTasks(previous);
@@ -79,7 +94,7 @@ const TaskManager = () => {
   const handleDelete = async (id) => {
     const previous = tasks;
     setTasks((prev) => prev.filter((t) => t._id !== id));
-    setConfirmingId(null);
+    setConfirmingTask(null);
     try {
       await deleteTask(id);
       showToast('Task deleted.', 'success');
@@ -116,8 +131,38 @@ const TaskManager = () => {
     );
   }
 
+  const visibleTasks = tasks.filter((t) => {
+    const statusOk = filterStatus === 'all' || (t.status || 'pending') === filterStatus;
+    const priorityOk = filterPriority === 'all' || t.priority === filterPriority;
+    return statusOk && priorityOk;
+  });
+
   return (
     <section className="section">
+      {confirmingTask && (
+        <div style={confirmPanelStyle}>
+          <span style={{ color: '#ff6b6b', fontSize: '0.85rem', fontWeight: '600' }}>
+            Delete "{confirmingTask.title}"? This can't be undone.
+          </span>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+            <button
+              className="btn btn--outline"
+              style={{ padding: '4px 12px', borderColor: '#ff6b6b', color: '#ff6b6b', flex: 1 }}
+              onClick={() => handleDelete(confirmingTask._id)}
+            >
+              Yes, delete
+            </button>
+            <button
+              className="btn btn--outline"
+              style={{ padding: '4px 12px', flex: 1 }}
+              onClick={() => setConfirmingTask(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           display: 'flex',
@@ -131,9 +176,26 @@ const TaskManager = () => {
         <span className="section__title section__title--projects" style={{ marginBottom: 0 }}>
           My Tasks
         </span>
-        <span style={countBadgeStyle}>
-          {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
-        </span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={inputStyle}>
+            {STATUS_FILTERS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+          <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)} style={inputStyle}>
+            {PRIORITY_FILTERS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+          <span style={countBadgeStyle}>
+            {visibleTasks.length} {visibleTasks.length === 1 ? 'task' : 'tasks'}
+          </span>
+        </div>
       </div>
 
       <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
@@ -151,18 +213,25 @@ const TaskManager = () => {
             </option>
           ))}
         </select>
+        <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} style={inputStyle}>
+          {STATUSES.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
         <button type="submit" className="btn btn--solid" disabled={submitting || !newTitle.trim()}>
           {submitting ? 'Adding...' : 'Add Task'}
         </button>
       </form>
 
-      {tasks.length === 0 ? (
+      {visibleTasks.length === 0 ? (
         <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '40px 0' }}>
-          No tasks yet. Add one above.
+          No tasks match these filters.
         </p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '12px' }}>
-          {tasks.map((task) => (
+          {visibleTasks.map((task) => (
             <li
               key={task._id}
               className="projects__card"
@@ -171,49 +240,38 @@ const TaskManager = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: '16px',
+                flexWrap: 'wrap',
                 opacity: task.__optimistic ? 0.6 : 1,
               }}
             >
-              <label style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => handleToggleComplete(task)}
-                  disabled={task.__optimistic}
-                />
-                <span>
-                  <span
-                    style={{
-                      color: task.completed ? 'var(--muted)' : 'var(--text)',
-                      textDecoration: task.completed ? 'line-through' : 'none',
-                    }}
-                  >
-                    {task.title}
-                  </span>
-                  <span style={priorityBadgeStyle(task.priority)}>{task.priority}</span>
-                </span>
-              </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '160px' }}>
+                <span style={{ color: 'var(--text)' }}>{task.title}</span>
+                <span style={priorityBadgeStyle(task.priority)}>{task.priority}</span>
+              </div>
 
-              {confirmingId === task._id ? (
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Delete?</span>
-                  <button className="btn btn--outline" style={{ padding: '4px 12px' }} onClick={() => handleDelete(task._id)}>
-                    Yes
-                  </button>
-                  <button className="btn btn--outline" style={{ padding: '4px 12px' }} onClick={() => setConfirmingId(null)}>
-                    No
-                  </button>
-                </div>
-              ) : (
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <select
+                  value={task.status || 'pending'}
+                  onChange={(e) => handleStatusChange(task, e.target.value)}
+                  disabled={task.__optimistic}
+                  style={inputStyle}
+                >
+                  {STATUSES.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+
                 <button
                   className="btn btn--outline"
                   style={{ padding: '4px 12px' }}
-                  onClick={() => setConfirmingId(task._id)}
+                  onClick={() => setConfirmingTask(task)}
                   disabled={task.__optimistic}
                 >
                   Delete
                 </button>
-              )}
+              </div>
             </li>
           ))}
         </ul>
@@ -257,7 +315,6 @@ const countBadgeStyle = {
 };
 
 const priorityBadgeStyle = (priority) => ({
-  marginLeft: '10px',
   fontFamily: 'var(--font-mono)',
   fontSize: '0.7rem',
   textTransform: 'uppercase',
@@ -266,5 +323,20 @@ const priorityBadgeStyle = (priority) => ({
   border: '1px solid var(--line)',
   color: priority === 'high' ? '#ff6b6b' : priority === 'low' ? 'var(--muted)' : 'var(--accent)',
 });
+
+const confirmPanelStyle = {
+  position: 'fixed',
+  top: '90px',
+  right: '24px',
+  zIndex: 1000,
+  width: '300px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid #ff6b6b',
+  borderRadius: '10px',
+  padding: '16px',
+  boxShadow: '0 12px 32px rgba(0, 0, 0, 0.35)',
+  display: 'flex',
+  flexDirection: 'column',
+};
 
 export default TaskManager;

@@ -241,11 +241,12 @@ main {
   justify-content: center;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, background-color 0.2s ease;
 }
-
 .btn--solid {
   color: var(--on-accent);
+  background: var(--accent);
   box-shadow: 0 8px 24px -8px var(--accent);
 }
+
 
 .btn--solid:hover {
   transform: translateY(-2px);
