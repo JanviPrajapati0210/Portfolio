@@ -1,5 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getTasks, createTask, updateTask, deleteTask } from '../api';
+import { useNavigate } from 'react-router-dom';
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  isLoggedIn,
+  logoutUser,
+  getMe,
+} from '../api';
 import Toast from './Toast';
 
 const PRIORITIES = ['low', 'medium', 'high'];
@@ -17,9 +26,11 @@ const PRIORITY_FILTERS = [
 ];
 
 const TaskManager = () => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newPriority, setNewPriority] = useState('medium');
   const [newStatus, setNewStatus] = useState('pending');
@@ -38,15 +49,35 @@ const TaskManager = () => {
       const data = await getTasks();
       setTasks(data);
     } catch (err) {
+      if (err.status === 401) {
+        // Supplementary Problem: expired/invalid token -> redirect to login
+        navigate('/login');
+        return;
+      }
       setError(err.message || 'Failed to load tasks.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate('/login');
+      return;
+    }
+    getMe()
+      .then((user) => setUserEmail(user.email))
+      .catch(() => {
+        // token invalid/expired even before the first task fetch
+        navigate('/login');
+      });
     loadTasks();
-  }, [loadTasks]);
+  }, [loadTasks, navigate]);
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
 
   const handleAddTask = async (e) => {
     e.preventDefault();
@@ -71,6 +102,10 @@ const TaskManager = () => {
       showToast('Task added.', 'success');
     } catch (err) {
       setTasks((prev) => prev.filter((t) => t._id !== tempId));
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
       showToast(err.message || 'Could not add task.', 'error');
     } finally {
       setSubmitting(false);
@@ -87,6 +122,10 @@ const TaskManager = () => {
       setTasks((prev) => prev.map((t) => (t._id === task._id ? updated : t)));
     } catch (err) {
       setTasks(previous);
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
       showToast(err.message || 'Could not update task.', 'error');
     }
   };
@@ -100,6 +139,10 @@ const TaskManager = () => {
       showToast('Task deleted.', 'success');
     } catch (err) {
       setTasks(previous);
+      if (err.status === 401) {
+        navigate('/login');
+        return;
+      }
       showToast(err.message || 'Could not delete task.', 'error');
     }
   };
@@ -162,6 +205,24 @@ const TaskManager = () => {
           </div>
         </div>
       )}
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          marginBottom: '8px',
+        }}
+      >
+        <span style={{ color: 'var(--muted)', fontSize: '0.8rem', fontFamily: 'var(--font-mono)' }}>
+          {userEmail ? `Logged in as ${userEmail}` : ''}
+        </span>
+        <button className="btn btn--outline" style={{ padding: '4px 14px' }} onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
       <div
         style={{
